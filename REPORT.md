@@ -1,45 +1,53 @@
-# Stage 2 Report: Retrieval Quality and Evaluation Harness
+# Stage 3 Report: Local API and Browser UI Demoability
 
 ## Objective completed
-Strengthened the local-first prototype from a basic vertical slice to a more credible RAG baseline focused on retrieval quality control and explicit answerability behavior.
+Added a minimal local FastAPI API and browser UI while preserving the local-first architecture and existing CLI behavior.
 
 ## What was added
-- Explicit retrieval pipeline in `retrieval/pipeline.py` with separated stages:
-  - indexing (existing baseline index)
-  - retrieval (`retrieve_candidates`)
-  - scoring/thresholding (`score_candidates`)
-  - evidence sufficiency decision (`assess_evidence`)
-  - answer composition (`answer_from_retrieval`)
-- Retrieval quality controls:
-  - `top_k`
-  - `min_score_threshold`
-  - `min_evidence_results`
-- Explicit answerability contract:
-  - `Answerability.ANSWERABLE`
-  - `Answerability.NOT_ENOUGH_EVIDENCE`
-- Evaluation harness:
-  - fixture cases in `fixtures/eval/cases.json`
-  - runner in `evaluation/runner.py`
-  - report outputs to `outputs/eval/` as JSON and Markdown
-  - CLI command: `run-eval`
-- CLI improvements:
-  - `ask-demo` now exposes retrieval quality controls and prints answerability
-- Tests added/updated:
-  - threshold behavior
-  - expected-source retrieval for support and academic eval cases
-  - insufficient evidence remains unanswerable
-  - evaluation runner output shape
+- New API module:
+  - `src/universal_rag_copilot/api/app.py`
+  - `src/universal_rag_copilot/api/ui_page.py`
+  - `src/universal_rag_copilot/api/__init__.py`
+- Endpoints:
+  - `GET /health`
+  - `GET /ui`
+  - `POST /ask`
+  - `POST /run-eval`
+- `/ask` supports:
+  - `mode`, `profile`, `question`
+  - optional retrieval controls: `top_k`, `min_score_threshold`, `min_evidence_results`
+- `/ask` response includes:
+  - `answerability`, `answer`, `citations`, `retrieval_summary`
+- `/run-eval` executes local eval harness and returns:
+  - `total_cases`, `passed_cases`, `json_report_path`, `markdown_report_path`
+- Browser UI (plain HTML/CSS/JS):
+  - mode/profile selectors
+  - question input
+  - retrieval controls
+  - Ask action with result rendering
+  - Run Eval action with latest eval path display
+- Packaging updates:
+  - added lightweight dependencies: FastAPI, Uvicorn, httpx
+  - added `urc-api` console script
+
+## Existing CLI status
+- `index-demo`, `ask-demo`, and `run-eval` remain intact.
+
+## Tests added
+- `tests/test_api.py`:
+  - `/health`
+  - `/ui` content-type
+  - `/ask` happy path
+  - `/ask` insufficient-evidence case
+  - `/run-eval` response shape
 
 ## Verification
-- `make format`: pass (`python -m ruff format src tests`)
-- `make lint`: pass (`python -m ruff check src tests`)
-- `make test`: pass (`python -m pytest -q`, 6 passed)
-- `PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval`: pass
-  - Generated:
-    - `outputs/eval/eval_20260304T231638Z.json`
-    - `outputs/eval/eval_20260304T231638Z.md`
-  - Result: `passed_cases=3/3`
+- `make format`: pass
+- `make lint`: pass
+- `make test`: pass
 
-## Notes
-- No web UI and no external APIs were added.
-- All functionality remains local-first and dependency-light.
+## Constraints respected
+- No external APIs
+- No heavy frontend stack
+- Local-first architecture preserved
+- Demo-focused implementation (not production deployment)

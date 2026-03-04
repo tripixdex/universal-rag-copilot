@@ -1,33 +1,21 @@
 # Universal RAG Copilot
 
-Local-first RAG prototype focused on retrieval quality control and grounded answers.
+Local-first RAG prototype with CLI, minimal API, and browser UI.
 
 Current flow:
 `ingest -> chunk -> index -> retrieve -> score-filter -> evidence decision -> answer with citations`
 
-## Implemented
-- Two corpus modes from local fixtures: `support_kb`, `academic_pdf`
-- Three chunking profiles: `fine`, `balanced`, `coarse`
-- Explicit retrieval pipeline with modular stages:
-  - indexing
-  - retrieval
-  - scoring/thresholding
-  - answer composition
-- Retrieval quality controls:
-  - `top_k`
-  - minimum score threshold
-  - evidence sufficiency rule (minimum eligible results)
+## Capabilities
+- Local corpora: `support_kb`, `academic_pdf`
+- Chunking profiles: `fine`, `balanced`, `coarse`
+- Retrieval controls: `top_k`, `min_score_threshold`, `min_evidence_results`
 - Explicit answerability contract:
   - `answerable`
   - `not_enough_evidence`
-- Local evaluation harness with fixture-driven cases and output reports
-- CLI commands:
-  - `index-demo`
-  - `ask-demo`
-  - `run-eval`
+- Local eval harness with fixture cases and JSON/Markdown reports
 
-## Quickstart
-Run from repo root:
+## CLI path
+Run checks:
 
 ```bash
 make format
@@ -35,37 +23,72 @@ make lint
 make test
 ```
 
-## Demo Question Answering
-Index fixtures for a mode/profile:
-
-```bash
-PYTHONPATH=src python -m universal_rag_copilot.ui.cli index-demo --mode support_kb --profile balanced
-```
-
-Ask a grounded question:
+Demo ask:
 
 ```bash
 PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo \
   --mode support_kb \
   --profile balanced \
-  --question "How long do card refunds take to settle?" \
-  --top-k 4 \
-  --min-score-threshold 0.07 \
-  --min-evidence-results 1
+  --question "How long do card refunds take to settle?"
 ```
 
-## Evaluation
-Run local evaluation cases from `fixtures/eval/cases.json`:
+Run eval from CLI:
 
 ```bash
 PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval
 ```
 
-Reports are written to `outputs/eval/` as timestamped JSON and Markdown files.
+## API path
+Start API locally:
 
-## Current Limitations
-- Lexical token-overlap retrieval only (no embeddings/vector DB yet)
-- No reranking or hybrid retrieval
-- Academic mode still uses text fixtures, not real PDF parsing
-- Metrics are simple pass/fail checks, not benchmark-grade scoring
-- No UI yet (CLI only)
+```bash
+PYTHONPATH=src uvicorn universal_rag_copilot.api.app:app --host 127.0.0.1 --port 8000
+```
+
+Or with installed script:
+
+```bash
+urc-api
+```
+
+Endpoints:
+- `GET /health`
+- `GET /ui`
+- `POST /ask`
+- `POST /run-eval`
+
+Example `/ask`:
+
+```bash
+curl -s http://127.0.0.1:8000/ask -X POST -H 'content-type: application/json' -d '{
+  "mode":"support_kb",
+  "profile":"balanced",
+  "question":"How long do card refunds take to settle?",
+  "top_k":4,
+  "min_score_threshold":0.07,
+  "min_evidence_results":1
+}'
+```
+
+Run eval via API:
+
+```bash
+curl -s http://127.0.0.1:8000/run-eval -X POST -H 'content-type: application/json' -d '{}'
+```
+
+## Browser UI path
+Open:
+- `http://127.0.0.1:8000/ui`
+
+UI supports:
+- mode/profile selectors
+- question input
+- advanced retrieval controls
+- Ask action with answer/citations/retrieval summary output
+- Run Eval action with latest report path
+
+## Limitations
+- Lexical retrieval baseline only (no embedding/vector retrieval yet)
+- No reranking or hybrid retrievers
+- Academic mode still uses local text fixtures instead of PDF parsing
+- Demo-focused local app, not production deployment

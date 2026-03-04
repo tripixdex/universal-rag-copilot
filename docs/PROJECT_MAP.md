@@ -14,13 +14,7 @@ universal-rag-copilot/
     MODES_AND_PROFILES.md
   fixtures/
     support_kb/
-      returns_and_refunds.md
-      billing_and_invoices.md
-      account_access_security.md
     academic_pdf/
-      optimization_intro.md
-      neural_networks_basics.md
-      probability_for_ml.md
     eval/
       cases.json
   src/
@@ -29,6 +23,10 @@ universal-rag-copilot/
       __main__.py
       config.py
       pipeline.py
+      api/
+        __init__.py
+        app.py
+        ui_page.py
       domain/
         __init__.py
         models.py
@@ -55,6 +53,7 @@ universal-rag-copilot/
     test_chunking.py
     test_retrieval_answering.py
     test_evaluation_runner.py
+    test_api.py
   outputs/
   README.md
   pyproject.toml
@@ -63,12 +62,12 @@ universal-rag-copilot/
 ```
 
 ## Module purpose summary
-- `domain/`: typed contracts, including explicit `Answerability`
-- `ingestion/`: local fixture loading into `Document`
-- `chunking/`: mode/profile-aware chunking strategies
-- `retrieval/baseline.py`: deterministic token-overlap retrieval baseline
-- `retrieval/pipeline.py`: explicit retrieval stages and quality controls
-- `answering/`: grounded answer composition from eligible evidence
-- `evaluation/`: fixture-driven evaluation runner and report writing
-- `ui/`: CLI for index, ask, and eval flows
-- `tests/`: chunking, retrieval quality controls, and eval harness checks
+- `api/`: minimal FastAPI app and plain HTML/JS demo UI
+- `domain/`: typed contracts, including explicit answerability
+- `ingestion/`: local fixture loading
+- `chunking/`: mode/profile-aware chunking
+- `retrieval/`: baseline lexical retrieval + explicit retrieval pipeline controls
+- `answering/`: grounded answer composition
+- `evaluation/`: local fixture-driven eval harness and report writing
+- `ui/`: CLI commands (`index-demo`, `ask-demo`, `run-eval`)
+- `tests/`: retrieval/eval behavior and API endpoint tests
