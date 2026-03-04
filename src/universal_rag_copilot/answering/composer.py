@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import re
 
-from universal_rag_copilot.domain import AnswerResult, Citation, RetrievalResult
+from universal_rag_copilot.domain import Answerability, AnswerResult, Citation, RetrievalResult
 from universal_rag_copilot.retrieval.baseline import tokenize
+
+INSUFFICIENT_EVIDENCE_MESSAGE = (
+    "Not enough evidence in the indexed corpus to answer this question reliably."
+)
 
 
 def _best_snippets(text: str, query_terms: set[str], limit: int = 2) -> list[str]:
@@ -22,13 +26,16 @@ def _best_snippets(text: str, query_terms: set[str], limit: int = 2) -> list[str
 
 
 def compose_answer(
-    question: str, results: list[RetrievalResult], max_citations: int = 3
+    question: str,
+    results: list[RetrievalResult],
+    answerability: Answerability,
+    max_citations: int = 3,
 ) -> AnswerResult:
-    if not results or results[0].score < 0.07:
+    if answerability is Answerability.NOT_ENOUGH_EVIDENCE:
         return AnswerResult(
-            answer="Not enough evidence in the indexed corpus to answer this question reliably.",
+            answer=INSUFFICIENT_EVIDENCE_MESSAGE,
             citations=(),
-            insufficient_evidence=True,
+            answerability=Answerability.NOT_ENOUGH_EVIDENCE,
         )
 
     query_terms = tokenize(question)
@@ -49,7 +56,14 @@ def compose_answer(
 
     answer = " ".join(evidence_lines).strip()
     if not answer:
-        answer = "Not enough evidence in the indexed corpus to answer this question reliably."
-        return AnswerResult(answer=answer, citations=tuple(citations), insufficient_evidence=True)
+        return AnswerResult(
+            answer=INSUFFICIENT_EVIDENCE_MESSAGE,
+            citations=tuple(citations),
+            answerability=Answerability.NOT_ENOUGH_EVIDENCE,
+        )
 
-    return AnswerResult(answer=answer, citations=tuple(citations), insufficient_evidence=False)
+    return AnswerResult(
+        answer=answer,
+        citations=tuple(citations),
+        answerability=Answerability.ANSWERABLE,
+    )

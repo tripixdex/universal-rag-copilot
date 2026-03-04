@@ -1,0 +1,29 @@
+[
+  {
+    "case_id": "support_refund_timeline",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "How long do card refunds take to settle?",
+    "expected_document_ids": ["returns_and_refunds"],
+    "expected_citation_titles": ["Returns and Refunds"],
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "academic_gradient_descent",
+    "mode": "academic_pdf",
+    "profile": "balanced",
+    "question": "What is gradient descent used for?",
+    "expected_document_ids": ["optimization_intro", "neural_networks_basics"],
+    "expected_citation_titles": ["Optimization for Machine Learning"],
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_insufficient_passport",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "How do I renew a passport in Canada?",
+    "expected_document_ids": [],
+    "expected_citation_titles": [],
+    "expected_answerability": "not_enough_evidence"
+  }
+]

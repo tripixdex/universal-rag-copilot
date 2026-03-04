@@ -1,30 +1,30 @@
 # Universal RAG Copilot
 
-Stage 1 implements a thin, local-first vertical slice:
-`ingest -> chunk -> index -> retrieve -> answer with citations`.
+Local-first RAG prototype focused on retrieval quality control and grounded answers.
 
-## Implemented in Stage 1
-- Two corpus modes from local fixtures:
-  - `support_kb`
-  - `academic_pdf`
-- Three explicit chunking profiles:
-  - `fine`
-  - `balanced`
-  - `coarse`
-- Local fixture ingestion into typed document models
-- Mode/profile-aware chunking into typed chunk models
-- Deterministic token-overlap retrieval baseline (no vector DB)
-- Grounded answer composer with citations and insufficient-evidence guard
-- Minimal CLI commands:
+Current flow:
+`ingest -> chunk -> index -> retrieve -> score-filter -> evidence decision -> answer with citations`
+
+## Implemented
+- Two corpus modes from local fixtures: `support_kb`, `academic_pdf`
+- Three chunking profiles: `fine`, `balanced`, `coarse`
+- Explicit retrieval pipeline with modular stages:
+  - indexing
+  - retrieval
+  - scoring/thresholding
+  - answer composition
+- Retrieval quality controls:
+  - `top_k`
+  - minimum score threshold
+  - evidence sufficiency rule (minimum eligible results)
+- Explicit answerability contract:
+  - `answerable`
+  - `not_enough_evidence`
+- Local evaluation harness with fixture-driven cases and output reports
+- CLI commands:
   - `index-demo`
   - `ask-demo`
-- Tests for chunking behavior, retrieval relevance, and insufficient-evidence handling
-
-## Not implemented yet
-- Embeddings and vector database retrieval
-- PDF parsing pipeline (academic corpus currently uses text/markdown fixtures)
-- Hybrid reranking, feedback loops, and advanced evaluation metrics
-- Web UI
+  - `run-eval`
 
 ## Quickstart
 Run from repo root:
@@ -35,7 +35,8 @@ make lint
 make test
 ```
 
-Index demo data:
+## Demo Question Answering
+Index fixtures for a mode/profile:
 
 ```bash
 PYTHONPATH=src python -m universal_rag_copilot.ui.cli index-demo --mode support_kb --profile balanced
@@ -47,14 +48,24 @@ Ask a grounded question:
 PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo \
   --mode support_kb \
   --profile balanced \
-  --question "How long do card refunds take to settle?"
+  --question "How long do card refunds take to settle?" \
+  --top-k 4 \
+  --min-score-threshold 0.07 \
+  --min-evidence-results 1
 ```
 
-Academic mode example:
+## Evaluation
+Run local evaluation cases from `fixtures/eval/cases.json`:
 
 ```bash
-PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo \
-  --mode academic_pdf \
-  --profile balanced \
-  --question "What is gradient descent used for?"
+PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval
 ```
+
+Reports are written to `outputs/eval/` as timestamped JSON and Markdown files.
+
+## Current Limitations
+- Lexical token-overlap retrieval only (no embeddings/vector DB yet)
+- No reranking or hybrid retrieval
+- Academic mode still uses text fixtures, not real PDF parsing
+- Metrics are simple pass/fail checks, not benchmark-grade scoring
+- No UI yet (CLI only)

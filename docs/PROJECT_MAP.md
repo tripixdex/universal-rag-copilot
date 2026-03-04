@@ -21,6 +21,8 @@ universal-rag-copilot/
       optimization_intro.md
       neural_networks_basics.md
       probability_for_ml.md
+    eval/
+      cases.json
   src/
     universal_rag_copilot/
       __init__.py
@@ -39,17 +41,20 @@ universal-rag-copilot/
       retrieval/
         __init__.py
         baseline.py
+        pipeline.py
       answering/
         __init__.py
         composer.py
       evaluation/
         __init__.py
+        runner.py
       ui/
         __init__.py
         cli.py
   tests/
     test_chunking.py
     test_retrieval_answering.py
+    test_evaluation_runner.py
   outputs/
   README.md
   pyproject.toml
@@ -58,10 +63,12 @@ universal-rag-copilot/
 ```
 
 ## Module purpose summary
-- `domain/`: typed contracts for document, chunk, retrieval result, citation, answer result
-- `ingestion/`: local fixture loading and normalization into `Document`
-- `chunking/`: mode/profile-aware chunking policies
-- `retrieval/`: deterministic token-overlap index and ranking
-- `answering/`: grounded answer synthesis with citation output and evidence gating
-- `ui/`: thin CLI (`index-demo`, `ask-demo`)
-- `tests/`: first behavior tests for chunking, retrieval, and insufficient evidence
+- `domain/`: typed contracts, including explicit `Answerability`
+- `ingestion/`: local fixture loading into `Document`
+- `chunking/`: mode/profile-aware chunking strategies
+- `retrieval/baseline.py`: deterministic token-overlap retrieval baseline
+- `retrieval/pipeline.py`: explicit retrieval stages and quality controls
+- `answering/`: grounded answer composition from eligible evidence
+- `evaluation/`: fixture-driven evaluation runner and report writing
+- `ui/`: CLI for index, ask, and eval flows
+- `tests/`: chunking, retrieval quality controls, and eval harness checks

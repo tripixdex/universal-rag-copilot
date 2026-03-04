@@ -1,6 +1,7 @@
 """Shared domain models."""
 
 from universal_rag_copilot.domain.models import (
+    Answerability,
     AnswerResult,
     Chunk,
     ChunkProfile,
@@ -11,6 +12,7 @@ from universal_rag_copilot.domain.models import (
 )
 
 __all__ = [
+    "Answerability",
     "AnswerResult",
     "Chunk",
     "ChunkProfile",

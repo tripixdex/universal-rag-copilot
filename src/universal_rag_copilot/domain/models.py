@@ -18,6 +18,11 @@ class ChunkProfile(StrEnum):
     COARSE = "coarse"
 
 
+class Answerability(StrEnum):
+    ANSWERABLE = "answerable"
+    NOT_ENOUGH_EVIDENCE = "not_enough_evidence"
+
+
 @dataclass(frozen=True)
 class Document:
     document_id: str
@@ -59,4 +64,8 @@ class Citation:
 class AnswerResult:
     answer: str
     citations: tuple[Citation, ...]
-    insufficient_evidence: bool
+    answerability: Answerability
+
+    @property
+    def insufficient_evidence(self) -> bool:
+        return self.answerability is Answerability.NOT_ENOUGH_EVIDENCE

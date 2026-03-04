@@ -1,29 +1,48 @@
-# Evaluation Plan (MVP-Oriented)
+# Evaluation Plan (Local Harness)
 
-## Goal
-Measure whether retrieval and answer grounding are trustworthy across `support_kb` and `academic_pdf` corpora.
+## Scope
+Evaluate retrieval grounding and answerability decisions across local fixture corpora.
 
-## Dataset plan
-- Build small fixture sets per mode in `fixtures/`.
-- For each query, maintain expected relevant passages and non-relevant distractors.
-- Include at least one insufficient-evidence query per mode.
+## Case dataset
+Location: `fixtures/eval/cases.json`
 
-## Retrieval-focused checks
-- Top-k relevance: at least one gold passage appears in top-k for target queries.
-- Mode sensitivity: same query evaluated under both modes should show different ranking behavior where appropriate.
-- Profile sensitivity: `fine` vs `coarse` changes chunk granularity and retrieval candidates as expected.
+Each case defines:
+- `case_id`
+- `mode`
+- `profile`
+- `question`
+- `expected_document_ids` and/or `expected_citation_titles`
+- `expected_answerability` (`answerable` or `not_enough_evidence`)
 
-## Answer-with-citations checks
-- Every factual claim in answer should map to at least one retrieved citation.
-- Citation precision: citation points to text that actually supports claim.
-- Citation format consistency: source identifiers are readable and stable.
+Current coverage:
+- `support_kb`: answerable case
+- `academic_pdf`: answerable case
+- insufficient evidence: unanswerable case
 
-## Failure-case checks
-- Insufficient evidence: assistant must respond with uncertainty instead of fabricated facts.
-- Conflicting sources: assistant should acknowledge conflict and avoid overconfident conclusion.
-- Off-topic query: assistant should avoid irrelevant synthesis and suggest re-scoping.
+## Runner
+- Module: `src/universal_rag_copilot/evaluation/runner.py`
+- CLI: `PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval`
 
-## Reporting
-- Save run artifacts under `outputs/`.
-- Track simple metrics first: retrieval hit@k, citation coverage rate, insufficient-evidence correctness.
-- Add qualitative error notes per failed query to guide next iteration.
+Runner behavior per case:
+1. Build mode/profile index from fixtures
+2. Run retrieval with configured controls
+3. Evaluate answerability match
+4. Evaluate expected-source match against retrieved docs/citations
+5. Record per-case result and aggregate pass count
+
+## Outputs
+Written under `outputs/eval/`:
+- `eval_<timestamp>.json`
+- `eval_<timestamp>.md`
+
+JSON report shape:
+- `generated_at_utc`
+- `total_cases`
+- `passed_cases`
+- `cases[]` with match flags and observed sources
+
+## Next expansions
+- Add hit@k / MRR style metrics
+- Add adversarial distractor cases
+- Add profile sensitivity sweeps (fine/balanced/coarse)
+- Add conflict-handling cases for citation precision
