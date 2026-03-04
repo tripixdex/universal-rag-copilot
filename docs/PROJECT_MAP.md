@@ -1,6 +1,6 @@
 # Project Map
 
-## Intended repository tree
+## Current repository tree
 ```text
 universal-rag-copilot/
   docs/
@@ -12,44 +12,56 @@ universal-rag-copilot/
     ARCHITECTURE.md
     PROJECT_MAP.md
     MODES_AND_PROFILES.md
+  fixtures/
+    support_kb/
+      returns_and_refunds.md
+      billing_and_invoices.md
+      account_access_security.md
+    academic_pdf/
+      optimization_intro.md
+      neural_networks_basics.md
+      probability_for_ml.md
   src/
     universal_rag_copilot/
       __init__.py
+      __main__.py
       config.py
+      pipeline.py
       domain/
         __init__.py
         models.py
       ingestion/
         __init__.py
+        local_ingestion.py
       chunking/
         __init__.py
+        strategies.py
       retrieval/
         __init__.py
+        baseline.py
       answering/
         __init__.py
+        composer.py
       evaluation/
         __init__.py
       ui/
         __init__.py
+        cli.py
   tests/
-  fixtures/
+    test_chunking.py
+    test_retrieval_answering.py
   outputs/
   README.md
   pyproject.toml
   Makefile
-  .gitignore
   REPORT.md
 ```
 
 ## Module purpose summary
-- `docs/`: single source of truth for product and architecture direction
-- `domain/`: core data models shared across modules
-- `ingestion/`: raw corpus parsing and normalization contracts
-- `chunking/`: chunk strategy interfaces and profile behavior
-- `retrieval/`: retrieval pipeline contracts and ranking interfaces
-- `answering/`: grounded answer generation contracts
-- `evaluation/`: evaluation fixtures and scoring contracts
-- `ui/`: user interaction boundary
-- `tests/`: verification suite (to be added)
-- `fixtures/`: sample corpora, queries, expected evidence
-- `outputs/`: generated run/evaluation artifacts
+- `domain/`: typed contracts for document, chunk, retrieval result, citation, answer result
+- `ingestion/`: local fixture loading and normalization into `Document`
+- `chunking/`: mode/profile-aware chunking policies
+- `retrieval/`: deterministic token-overlap index and ranking
+- `answering/`: grounded answer synthesis with citation output and evidence gating
+- `ui/`: thin CLI (`index-demo`, `ask-demo`)
+- `tests/`: first behavior tests for chunking, retrieval, and insufficient evidence

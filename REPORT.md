@@ -1,49 +1,40 @@
-# Foundation Report: Universal RAG Copilot
+# Stage 1 Report: First Vertical Slice
 
-## Summary of what was created
-- Established a docs-first project foundation for a local-first multi-mode RAG assistant.
-- Added product documents: PRD, scope boundaries, acceptance criteria, demo scenarios, and evaluation plan.
-- Added architecture documents: module design, project map, and corpus mode/chunking profile rationale.
-- Added minimal Python package skeleton with docstring-only modules.
-- Added basic repository hygiene files (`README`, `.gitignore`, `pyproject`, `Makefile`).
+## Objective completed
+Implemented the first thin, real end-to-end local path:
+`ingest -> chunk -> index -> retrieve -> answer with citations`.
 
-## Files created
-- `README.md`
-- `.gitignore`
-- `pyproject.toml`
-- `Makefile`
-- `REPORT.md`
-- `docs/PRD.md`
-- `docs/SCOPE.md`
-- `docs/ACCEPTANCE_CRITERIA.md`
-- `docs/DEMO_SCENARIOS.md`
-- `docs/EVAL_PLAN.md`
-- `docs/ARCHITECTURE.md`
-- `docs/PROJECT_MAP.md`
-- `docs/MODES_AND_PROFILES.md`
-- `src/universal_rag_copilot/__init__.py`
-- `src/universal_rag_copilot/config.py`
-- `src/universal_rag_copilot/domain/__init__.py`
-- `src/universal_rag_copilot/domain/models.py`
-- `src/universal_rag_copilot/ingestion/__init__.py`
-- `src/universal_rag_copilot/chunking/__init__.py`
-- `src/universal_rag_copilot/retrieval/__init__.py`
-- `src/universal_rag_copilot/answering/__init__.py`
-- `src/universal_rag_copilot/evaluation/__init__.py`
-- `src/universal_rag_copilot/ui/__init__.py`
-- `tests/.gitkeep`
-- `fixtures/.gitkeep`
-- `outputs/.gitkeep`
+## What was added
+- Demo fixture corpora for both modes:
+  - `fixtures/support_kb/*.md`
+  - `fixtures/academic_pdf/*.md`
+- Typed domain models in `domain/models.py`:
+  - `Document`, `Chunk`, `RetrievalResult`, `AnswerResult`, `Citation`
+  - `CorpusMode`, `ChunkProfile`
+- Ingestion layer:
+  - local fixture reader with metadata normalization
+- Chunking:
+  - mode-aware section/chapter chunking
+  - explicit `fine/balanced/coarse` profile settings
+- Retrieval baseline:
+  - deterministic token-overlap ranking
+  - top-k results with scores and matched terms
+- Answer composition:
+  - grounded snippet-only answer behavior
+  - citation list and insufficient-evidence guardrail
+- CLI:
+  - `index-demo`
+  - `ask-demo`
+- Tests:
+  - chunking profile/mode differentiation
+  - support and academic retrieval relevance
+  - insufficient evidence / no unsupported answer behavior
 
-## Open questions
-- What initial local embedding/index stack should be preferred in implementation stage?
-- Should `balanced` be global default, or mode-specific defaults (`fine` for support, `coarse` for academic)?
-- What citation format is required for first user-facing demos (section-only vs section+page)?
+## Architecture notes
+- Stage 1 intentionally avoids external APIs and vector databases.
+- Retrieval is pluggable: current lexical index can be replaced by embedding/vector retrieval later without changing domain contracts.
 
-## Suggested next stage
-- Stage 1: implement minimal end-to-end vertical slice:
-  - one fixture corpus per mode
-  - simple chunker profiles
-  - local retrieval baseline
-  - answer composer with citation stubs
-  - first automated acceptance checks in `tests/`
+## Verification
+- `make format`: pass (`python -m ruff format src tests`)
+- `make lint`: pass (`python -m ruff check src tests`)
+- `make test`: pass (`python -m pytest -q`, 4 passed)

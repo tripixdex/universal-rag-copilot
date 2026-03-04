@@ -1,4 +1,5 @@
-"""Retrieval module placeholder.
+"""Retrieval baseline exports."""
 
-Planned responsibilities: rank and return evidence chunks for a query.
-"""
+from universal_rag_copilot.retrieval.baseline import RetrievalIndex, build_index, retrieve
+
+__all__ = ["RetrievalIndex", "build_index", "retrieve"]

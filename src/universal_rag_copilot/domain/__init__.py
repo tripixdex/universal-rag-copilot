@@ -1,4 +1,21 @@
-"""Domain package placeholder.
+"""Shared domain models."""
 
-Contains shared model contracts across the project.
-"""
+from universal_rag_copilot.domain.models import (
+    AnswerResult,
+    Chunk,
+    ChunkProfile,
+    Citation,
+    CorpusMode,
+    Document,
+    RetrievalResult,
+)
+
+__all__ = [
+    "AnswerResult",
+    "Chunk",
+    "ChunkProfile",
+    "Citation",
+    "CorpusMode",
+    "Document",
+    "RetrievalResult",
+]

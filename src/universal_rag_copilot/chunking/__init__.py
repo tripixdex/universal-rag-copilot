@@ -1,4 +1,5 @@
-"""Chunking module placeholder.
+"""Chunking utilities."""
 
-Planned responsibilities: mode-aware chunking with fine/balanced/coarse profiles.
-"""
+from universal_rag_copilot.chunking.strategies import CHUNK_CONFIG, chunk_documents
+
+__all__ = ["CHUNK_CONFIG", "chunk_documents"]

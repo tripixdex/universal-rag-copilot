@@ -1,4 +1,4 @@
-"""Universal RAG Copilot package.
+"""Universal RAG Copilot package."""
 
-This package currently contains architecture skeleton modules only.
-"""
+__all__ = ["__version__"]
+__version__ = "0.1.0"

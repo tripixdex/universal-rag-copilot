@@ -1,4 +1,5 @@
-"""Ingestion module placeholder.
+"""Ingestion utilities."""
 
-Planned responsibilities: load raw sources and normalize by corpus mode.
-"""
+from universal_rag_copilot.ingestion.local_ingestion import load_fixture_documents
+
+__all__ = ["load_fixture_documents"]

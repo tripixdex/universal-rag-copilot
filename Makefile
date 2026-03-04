@@ -1,13 +1,13 @@
 .PHONY: format lint test tree
 
 format:
-	@echo "Placeholder: run code formatter (to be defined in next stage)."
+	python -m ruff format src tests
 
 lint:
-	@echo "Placeholder: run linters (to be defined in next stage)."
+	python -m ruff check src tests
 
 test:
-	@echo "Placeholder: run tests (to be defined in next stage)."
+	python -m pytest -q
 
 tree:
 	@find . -maxdepth 3 -type d | sort

@@ -1,21 +1,60 @@
 # Universal RAG Copilot
 
-Local-first Retrieval-Augmented Generation (RAG) assistant foundation.
+Stage 1 implements a thin, local-first vertical slice:
+`ingest -> chunk -> index -> retrieve -> answer with citations`.
 
-This repository is currently in **Stage 0: Product + Architecture Foundation**.
-It intentionally does **not** include a full implementation yet.
+## Implemented in Stage 1
+- Two corpus modes from local fixtures:
+  - `support_kb`
+  - `academic_pdf`
+- Three explicit chunking profiles:
+  - `fine`
+  - `balanced`
+  - `coarse`
+- Local fixture ingestion into typed document models
+- Mode/profile-aware chunking into typed chunk models
+- Deterministic token-overlap retrieval baseline (no vector DB)
+- Grounded answer composer with citations and insufficient-evidence guard
+- Minimal CLI commands:
+  - `index-demo`
+  - `ask-demo`
+- Tests for chunking behavior, retrieval relevance, and insufficient-evidence handling
 
-## What this stage includes
-- Product documents (problem, scope, acceptance criteria, demos, evaluation plan)
-- Architecture and module boundaries
-- Minimal Python package skeleton with docstring-only modules
-- Basic project hygiene (`pyproject.toml`, `Makefile`, `.gitignore`)
+## Not implemented yet
+- Embeddings and vector database retrieval
+- PDF parsing pipeline (academic corpus currently uses text/markdown fixtures)
+- Hybrid reranking, feedback loops, and advanced evaluation metrics
+- Web UI
 
-## Repo organization
-- `docs/`: product and architecture docs
-- `src/universal_rag_copilot/`: minimal package skeleton
-- `tests/`: placeholder for test suite
-- `fixtures/`: placeholder for sample corpora and query fixtures
-- `outputs/`: placeholder for generated artifacts and evaluation outputs
+## Quickstart
+Run from repo root:
 
-See [REPORT.md](REPORT.md) for a structured summary and next steps.
+```bash
+make format
+make lint
+make test
+```
+
+Index demo data:
+
+```bash
+PYTHONPATH=src python -m universal_rag_copilot.ui.cli index-demo --mode support_kb --profile balanced
+```
+
+Ask a grounded question:
+
+```bash
+PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo \
+  --mode support_kb \
+  --profile balanced \
+  --question "How long do card refunds take to settle?"
+```
+
+Academic mode example:
+
+```bash
+PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo \
+  --mode academic_pdf \
+  --profile balanced \
+  --question "What is gradient descent used for?"
+```

@@ -1,4 +1,5 @@
-"""Answering module placeholder.
+"""Answer composition exports."""
 
-Planned responsibilities: produce grounded answers with citations.
-"""
+from universal_rag_copilot.answering.composer import compose_answer
+
+__all__ = ["compose_answer"]
