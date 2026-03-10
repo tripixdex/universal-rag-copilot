@@ -7,7 +7,7 @@ from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from pydantic import BaseModel, Field
 
 from universal_rag_copilot.api.ui_page import UI_HTML
@@ -51,9 +51,30 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    return RedirectResponse(url="/ui", status_code=307)
+
+
 @app.get("/ui", response_class=HTMLResponse)
 def ui() -> HTMLResponse:
     return HTMLResponse(content=UI_HTML)
+
+
+@app.head("/ui", include_in_schema=False)
+def ui_head() -> Response:
+    return Response(content=b"", media_type="text/html")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> Response:
+    return Response(status_code=204)
+
+
+@app.get("/apple-touch-icon.png", include_in_schema=False)
+@app.get("/apple-touch-icon-precomposed.png", include_in_schema=False)
+def apple_touch_icon() -> Response:
+    return Response(status_code=204)
 
 
 @app.post("/ask")

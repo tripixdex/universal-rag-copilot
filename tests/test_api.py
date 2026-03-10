@@ -11,11 +11,24 @@ def test_health() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_root_redirects_to_ui() -> None:
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (302, 307)
+    assert response.headers["location"] == "/ui"
+
+
 def test_ui_returns_html() -> None:
     response = client.get("/ui")
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/html")
     assert "Universal RAG Copilot" in response.text
+
+
+def test_ui_head_returns_200_html_no_body() -> None:
+    response = client.head("/ui")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert response.text == ""
 
 
 def test_ask_happy_path() -> None:
