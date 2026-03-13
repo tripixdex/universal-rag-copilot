@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 from universal_rag_copilot.api.app import app
@@ -71,8 +73,41 @@ def test_ask_insufficient_evidence_case() -> None:
     assert body["citations"] == []
 
 
-def test_run_eval_response_shape(tmp_path) -> None:
-    response = client.post("/run-eval", json={"output_dir": str(tmp_path)})
+def test_ask_rejects_whitespace_only_question() -> None:
+    response = client.post(
+        "/ask",
+        json={
+            "mode": "support_kb",
+            "profile": "balanced",
+            "question": "   ",
+        },
+    )
+    assert response.status_code == 422
+
+
+def test_ask_rejects_excessive_inputs() -> None:
+    response = client.post(
+        "/ask",
+        json={
+            "mode": "support_kb",
+            "profile": "balanced",
+            "question": "x" * 401,
+            "top_k": 9,
+            "min_score_threshold": 1.1,
+            "min_evidence_results": 5,
+        },
+    )
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    locations = {tuple(item["loc"]) for item in detail}
+    assert ("body", "question") in locations
+    assert ("body", "top_k") in locations
+    assert ("body", "min_score_threshold") in locations
+    assert ("body", "min_evidence_results") in locations
+
+
+def test_run_eval_response_shape() -> None:
+    response = client.post("/run-eval", json={})
     assert response.status_code == 200
     body = response.json()
     assert set(body) == {
@@ -81,5 +116,12 @@ def test_run_eval_response_shape(tmp_path) -> None:
         "json_report_path",
         "markdown_report_path",
     }
-    assert body["total_cases"] >= 3
+    assert body["total_cases"] >= 15
     assert body["passed_cases"] <= body["total_cases"]
+    assert Path(body["json_report_path"]).parent.name == "eval"
+    assert Path(body["markdown_report_path"]).parent.name == "eval"
+
+
+def test_run_eval_rejects_caller_controlled_output_dir() -> None:
+    response = client.post("/run-eval", json={"output_dir": "../escape"})
+    assert response.status_code == 422

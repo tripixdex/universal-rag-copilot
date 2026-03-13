@@ -1,24 +1,24 @@
 # Acceptance Criteria
 
-All criteria are for this foundation stage only.
+These criteria describe the current local demo MVP, not a foundation-only scaffold.
 
-## Repository structure
-1. Required directories exist: `docs/`, `src/universal_rag_copilot/`, `tests/`, `fixtures/`, `outputs/`.
-2. Required source modules exist under `src/universal_rag_copilot/` and are near-empty/docstring-only.
-3. Hygiene files exist: `README.md`, `.gitignore`, `pyproject.toml`, `Makefile`, `REPORT.md`.
+## Runtime paths
+1. `make up` starts the API from a clean source checkout without requiring an implicit shell `PYTHONPATH`.
+2. `make lint` passes.
+3. `make test` passes.
+4. CLI demo commands work with `PYTHONPATH=src` from the repo root.
 
-## Product documentation quality
-4. `docs/PRD.md` states problem, target users, value proposition, and rationale for multiple corpus modes.
-5. `docs/SCOPE.md` clearly separates MVP, later work, and out-of-scope items.
-6. `docs/DEMO_SCENARIOS.md` includes `support_kb`, `academic_pdf`, and "not enough evidence" scenarios.
-7. `docs/EVAL_PLAN.md` defines retrieval checks, citation checks, and failure-case checks.
+## Product behavior
+5. `POST /ask` returns either `answerable` with citations or `not_enough_evidence`.
+6. API validation rejects empty, malformed, or excessive user inputs with `422` errors.
+7. `POST /run-eval` always writes reports under repo-local `outputs/eval/`.
+8. The UI shows answerability, answer text, citations, and eval summary in a readable form.
 
-## Architecture documentation quality
-8. `docs/ARCHITECTURE.md` describes modules: ingestion, chunking, embeddings/index, retrieval, answering, evaluation, ui.
-9. `docs/PROJECT_MAP.md` includes intended repo tree plus purpose of each area.
-10. `docs/MODES_AND_PROFILES.md` explains both corpus modes, all chunking profiles, and why chunking differs by corpus type.
+## Evaluation credibility
+9. The eval set contains at least 15 deterministic cases.
+10. Eval coverage includes answerable support questions, answerable academic questions, distractors, near-misses, false-friend wording, and clearly unanswerable questions.
+11. Source validation requires more than any single overlap; expected sources and top-document expectations must match the observed results.
 
-## Honesty and constraints
-11. Docs explicitly state that this stage is foundation only and not full implementation.
-12. No unnecessary runtime dependencies are introduced in `pyproject.toml`.
-13. No file in this stage exceeds 200 lines.
+## Documentation honesty
+12. `README.md`, `docs/SCOPE.md`, `docs/DEMO_SCENARIOS.md`, and `docs/EVAL_PLAN.md` describe the repo as a local-first demo MVP that already runs.
+13. Docs clearly state known limitations and avoid implying production readiness.

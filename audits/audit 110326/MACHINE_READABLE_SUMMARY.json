@@ -1,0 +1,55 @@
+{
+  "project_name": "Universal RAG Copilot",
+  "verdict": "MVP BUT NEEDS FIXES",
+  "portfolio_readiness_score_10": 7.1,
+  "verified_capabilities": [
+    "Local fixture ingestion from markdown corpora",
+    "Mode/profile-aware chunking",
+    "Deterministic lexical retrieval",
+    "Evidence gating before answer composition",
+    "Explicit answerability/not_enough_evidence behavior",
+    "CLI commands: index-demo, ask-demo, run-eval",
+    "FastAPI app with /health, /ui, /ask, /run-eval",
+    "Static browser UI served by the API",
+    "Eval harness with 18 fixture cases and JSON/Markdown reports",
+    "Basic API input validation for question length and retrieval controls",
+    "API-side rejection of caller-controlled output_dir on /run-eval",
+    "Lint and tests currently pass"
+  ],
+  "inferred_capabilities": [
+    "Suitable for a local portfolio demo after one short credibility-hardening sprint",
+    "Best positioned as a principled local RAG MVP rather than a production-ready system"
+  ],
+  "not_verified_capabilities": [
+    "Fresh install from scratch on a clean machine",
+    "Stable live browser demo in this audit environment",
+    "Stable live curl-based HTTP verification across exec sessions in this audit environment",
+    "Any internet-facing or multi-user deployment safety"
+  ],
+  "blockers": [
+    "Academic answer composition can include off-topic snippets while still passing eval",
+    "Eval harness does not verify answer-text relevance or citation precision",
+    "AUDIT_EXPERT_REPORT.md is stale and now materially false",
+    "docs/ARCHITECTURE.md still overstates academic ingestion behavior",
+    "Current worktree is dirty and contains generated audit artifacts"
+  ],
+  "recommended_next_actions": [
+    "Add answer-level eval assertions so irrelevant snippet concatenation fails",
+    "Remove or rewrite stale audit/report files that contradict current repo state",
+    "Tighten docs around actual academic ingestion limits",
+    "Expose richer citation provenance such as source path and chunk window",
+    "Create one repeatable demo path that does not depend on fragile live socket behavior in restricted environments"
+  ],
+  "demo_commands": [
+    "PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo --mode support_kb --profile balanced --question \"How long do card refunds take to settle?\"",
+    "PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo --mode support_kb --profile balanced --question \"How do I renew a passport in Canada?\"",
+    "PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo --mode academic_pdf --profile balanced --question \"In batch gradient descent, what data does each step use?\"",
+    "make up",
+    "open http://127.0.0.1:8000/ui"
+  ],
+  "test_commands": [
+    "make lint",
+    "make test",
+    "PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval"
+  ]
+}

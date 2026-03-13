@@ -1,4 +1,4 @@
-# PRD: Universal RAG Copilot (MVP Foundation)
+# PRD: Universal RAG Copilot
 
 ## Problem
 Teams store knowledge in different forms: support documentation and academic papers are common examples. A single retrieval pipeline often performs poorly across both because text structure, metadata, and evidence expectations differ.
@@ -31,4 +31,4 @@ MVP supports:
 - Retrieval-first answer flow with citations
 - Explicit "not enough evidence" behavior
 
-This stage delivers product and architecture foundation only, not full runtime features.
+The current repo delivers a runnable local demo MVP. It is intentionally not a production system.

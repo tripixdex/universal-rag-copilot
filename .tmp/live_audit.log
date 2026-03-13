@@ -1,0 +1,7 @@
+<frozen runpy>:128: RuntimeWarning: 'universal_rag_copilot.api.app' found in sys.modules after import of package 'universal_rag_copilot.api', but prior to execution of 'universal_rag_copilot.api.app'; this may result in unpredictable behaviour
+INFO:     Started server process [15593]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 1] error while attempting to bind on address ('127.0.0.1', 8000): operation not permitted
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.

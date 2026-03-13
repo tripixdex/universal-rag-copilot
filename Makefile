@@ -3,6 +3,7 @@
 API_HOST ?= 127.0.0.1
 API_PORT ?= 8000
 API_URL := http://$(API_HOST):$(API_PORT)
+LOCAL_PYTHONPATH ?= src
 PID_FILE := .tmp/api.pid
 LOG_FILE := .tmp/api.log
 
@@ -29,7 +30,7 @@ up:
 		echo "Port $(API_PORT) on $(API_HOST) is already in use. Refusing to start API."; \
 		exit 1; \
 	}
-	@python -m universal_rag_copilot.api.app >"$(LOG_FILE)" 2>&1 & echo $$! >"$(PID_FILE)"
+	@PYTHONPATH="$(LOCAL_PYTHONPATH)" python -m universal_rag_copilot.api.app >"$(LOG_FILE)" 2>&1 & echo $$! >"$(PID_FILE)"
 	@for i in $$(seq 1 30); do \
 		if curl -sSf "$(API_URL)/health" >/dev/null; then \
 			echo "API is up at $(API_URL) (PID $$(cat "$(PID_FILE)"))."; \

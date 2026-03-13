@@ -1,48 +1,66 @@
-# Evaluation Plan (Local Harness)
+# Evaluation Plan
 
-## Scope
-Evaluate retrieval grounding and answerability decisions across local fixture corpora.
+## Goal
+Provide a believable local quality signal for the current lexical RAG demo without introducing external services or nondeterminism.
 
-## Case dataset
-Location: `fixtures/eval/cases.json`
+## Dataset
+- Fixture file: `fixtures/eval/cases.json`
+- Current size: 18 cases
+- Case categories:
+  - answerable support questions
+  - answerable academic questions
+  - clearly unanswerable questions
+  - distractor-heavy wording
+  - near-miss wording
+  - false-friend wording
+  - cases where the wrong chunk or title could win if ranking regresses
 
-Each case defines:
+## Per-case fields
 - `case_id`
 - `mode`
 - `profile`
 - `question`
-- `expected_document_ids` and/or `expected_citation_titles`
-- `expected_answerability` (`answerable` or `not_enough_evidence`)
+- `expected_document_ids`
+- `expected_citation_titles`
+- `expected_top_document_id`
+- `expected_answerability`
 
-Current coverage:
-- `support_kb`: answerable case
-- `academic_pdf`: answerable case
-- insufficient evidence: unanswerable case
+## Matching logic
+Each case checks two things:
+
+1. Answerability:
+   expected vs actual `answerable` / `not_enough_evidence`
+
+2. Source match:
+   - `expected_top_document_id` must match the actual top retrieved document when provided
+   - `expected_document_ids` must be a subset of the retrieved document ids
+   - `expected_citation_titles` must be a subset of the emitted citation titles
+   - cases with no expected sources only pass when the answer emits no citations
+
+This is intentionally stricter than the earlier any-overlap rule.
 
 ## Runner
 - Module: `src/universal_rag_copilot/evaluation/runner.py`
-- CLI: `PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval`
+- CLI:
+  `PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval`
+- API:
+  `POST /run-eval`
 
-Runner behavior per case:
-1. Build mode/profile index from fixtures
-2. Run retrieval with configured controls
-3. Evaluate answerability match
-4. Evaluate expected-source match against retrieved docs/citations
-5. Record per-case result and aggregate pass count
+The runner is deterministic and writes reports under `outputs/eval/`.
 
 ## Outputs
-Written under `outputs/eval/`:
-- `eval_<timestamp>.json`
-- `eval_<timestamp>.md`
+- `outputs/eval/eval_<timestamp>.json`
+- `outputs/eval/eval_<timestamp>.md`
 
-JSON report shape:
-- `generated_at_utc`
-- `total_cases`
-- `passed_cases`
-- `cases[]` with match flags and observed sources
+JSON reports include:
+- aggregate totals
+- per-case answerability match
+- per-case source match
+- observed top document id
+- observed retrieved document ids
+- observed citation titles
 
-## Next expansions
-- Add hit@k / MRR style metrics
-- Add adversarial distractor cases
-- Add profile sensitivity sweeps (fine/balanced/coarse)
-- Add conflict-handling cases for citation precision
+## Current limitations
+- The eval reflects a lexical baseline, so it validates stability of the implemented system rather than semantic excellence
+- There are no aggregate ranking metrics such as MRR yet
+- The corpus is still fixture-sized and intentionally local

@@ -21,6 +21,7 @@ class EvalCase:
     question: str
     expected_document_ids: tuple[str, ...]
     expected_citation_titles: tuple[str, ...]
+    expected_top_document_id: str | None
     expected_answerability: Answerability
 
 
@@ -34,6 +35,7 @@ class EvalCaseResult:
     actual_answerability: str
     answerability_match: bool
     expected_source_match: bool
+    actual_top_document_id: str | None
     actual_top_document_ids: tuple[str, ...]
     actual_citation_titles: tuple[str, ...]
 
@@ -46,6 +48,9 @@ def _parse_case(raw: dict[str, object]) -> EvalCase:
         question=str(raw["question"]),
         expected_document_ids=tuple(str(v) for v in raw.get("expected_document_ids", [])),
         expected_citation_titles=tuple(str(v) for v in raw.get("expected_citation_titles", [])),
+        expected_top_document_id=(
+            str(raw["expected_top_document_id"]) if raw.get("expected_top_document_id") else None
+        ),
         expected_answerability=Answerability(str(raw["expected_answerability"])),
     )
 
@@ -58,14 +63,23 @@ def load_eval_cases(path: Path) -> list[EvalCase]:
 def _matches_expected_sources(
     expected_document_ids: tuple[str, ...],
     expected_citation_titles: tuple[str, ...],
+    expected_top_document_id: str | None,
     actual_document_ids: tuple[str, ...],
     actual_citation_titles: tuple[str, ...],
 ) -> bool:
-    if expected_document_ids and not set(expected_document_ids) & set(actual_document_ids):
+    if expected_top_document_id and (
+        not actual_document_ids or actual_document_ids[0] != expected_top_document_id
+    ):
         return False
-    if expected_citation_titles and not set(expected_citation_titles) & set(actual_citation_titles):
+    if expected_document_ids and not set(expected_document_ids).issubset(set(actual_document_ids)):
         return False
-    return True
+    if expected_citation_titles and not set(expected_citation_titles).issubset(
+        set(actual_citation_titles)
+    ):
+        return False
+    if not expected_document_ids and not expected_citation_titles and not expected_top_document_id:
+        return not actual_citation_titles
+    return bool(actual_citation_titles or actual_document_ids)
 
 
 def run_evaluation(
@@ -90,6 +104,7 @@ def run_evaluation(
         expected_source_match = _matches_expected_sources(
             expected_document_ids=case.expected_document_ids,
             expected_citation_titles=case.expected_citation_titles,
+            expected_top_document_id=case.expected_top_document_id,
             actual_document_ids=actual_docs,
             actual_citation_titles=actual_titles,
         )
@@ -103,6 +118,7 @@ def run_evaluation(
                 actual_answerability=answer.answerability.value,
                 answerability_match=answerability_match,
                 expected_source_match=expected_source_match,
+                actual_top_document_id=actual_docs[0] if actual_docs else None,
                 actual_top_document_ids=actual_docs,
                 actual_citation_titles=actual_titles,
             )

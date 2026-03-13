@@ -6,24 +6,177 @@
     "question": "How long do card refunds take to settle?",
     "expected_document_ids": ["returns_and_refunds"],
     "expected_citation_titles": ["Returns and Refunds"],
+    "expected_top_document_id": "returns_and_refunds",
     "expected_answerability": "answerable"
   },
   {
-    "case_id": "academic_gradient_descent",
+    "case_id": "support_shipping_fee_exception",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "When are shipping fees refundable?",
+    "expected_document_ids": ["returns_and_refunds"],
+    "expected_citation_titles": ["Returns and Refunds"],
+    "expected_top_document_id": "returns_and_refunds",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_password_reset_expiry",
+    "mode": "support_kb",
+    "profile": "fine",
+    "question": "How long do password reset links stay valid?",
+    "expected_document_ids": ["account_access_security"],
+    "expected_citation_titles": ["Account Access and Security"],
+    "expected_top_document_id": "account_access_security",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_failed_payment_policy",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "What happens after a renewal charge fails?",
+    "expected_document_ids": ["billing_and_invoices"],
+    "expected_citation_titles": ["Billing and Invoices"],
+    "expected_top_document_id": "billing_and_invoices",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_false_friend_prepaid_cards",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "Can prepaid cards be used for subscription renewals?",
+    "expected_document_ids": ["billing_and_invoices"],
+    "expected_citation_titles": ["Billing and Invoices"],
+    "expected_top_document_id": "billing_and_invoices",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_invoice_download_path",
+    "mode": "support_kb",
+    "profile": "coarse",
+    "question": "Where can workspace owners download invoices?",
+    "expected_document_ids": ["billing_and_invoices"],
+    "expected_citation_titles": ["Billing and Invoices"],
+    "expected_top_document_id": "billing_and_invoices",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_two_factor_recovery",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "If I lost my authenticator app, what should I use first to recover access?",
+    "expected_document_ids": ["account_access_security"],
+    "expected_citation_titles": ["Account Access and Security"],
+    "expected_top_document_id": "account_access_security",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_refund_near_miss_bank_transfer",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "Do bank-transfer refunds settle faster than card refunds?",
+    "expected_document_ids": ["returns_and_refunds"],
+    "expected_citation_titles": ["Returns and Refunds"],
+    "expected_top_document_id": "returns_and_refunds",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_session_management",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "Which settings page lets admins sign out all active sessions?",
+    "expected_document_ids": ["account_access_security"],
+    "expected_citation_titles": ["Account Access and Security"],
+    "expected_top_document_id": "account_access_security",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "academic_batch_gradient_descent",
     "mode": "academic_pdf",
     "profile": "balanced",
-    "question": "What is gradient descent used for?",
-    "expected_document_ids": ["optimization_intro", "neural_networks_basics"],
+    "question": "In batch gradient descent, what data does each step use?",
+    "expected_document_ids": ["optimization_intro"],
     "expected_citation_titles": ["Optimization for Machine Learning"],
+    "expected_top_document_id": "optimization_intro",
     "expected_answerability": "answerable"
   },
   {
-    "case_id": "support_insufficient_passport",
+    "case_id": "academic_learning_rate_too_large",
+    "mode": "academic_pdf",
+    "profile": "balanced",
+    "question": "What can happen if the learning rate is too large?",
+    "expected_document_ids": ["optimization_intro"],
+    "expected_citation_titles": ["Optimization for Machine Learning"],
+    "expected_top_document_id": "optimization_intro",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "academic_regularization_effect",
+    "mode": "academic_pdf",
+    "profile": "balanced",
+    "question": "What does L2 regularization help reduce?",
+    "expected_document_ids": ["optimization_intro"],
+    "expected_citation_titles": ["Optimization for Machine Learning"],
+    "expected_top_document_id": "optimization_intro",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "academic_naive_bayes_assumption",
+    "mode": "academic_pdf",
+    "profile": "balanced",
+    "question": "What assumption does Naive Bayes make about features?",
+    "expected_document_ids": ["probability_for_ml"],
+    "expected_citation_titles": ["Probability Foundations for ML"],
+    "expected_top_document_id": "probability_for_ml",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "academic_backprop_chain_rule",
+    "mode": "academic_pdf",
+    "profile": "fine",
+    "question": "What rule does backpropagation apply to compute gradients?",
+    "expected_document_ids": ["neural_networks_basics"],
+    "expected_citation_titles": ["Neural Networks Basics"],
+    "expected_top_document_id": "neural_networks_basics",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "academic_generalization_monitor",
+    "mode": "academic_pdf",
+    "profile": "coarse",
+    "question": "What is used to monitor generalization?",
+    "expected_document_ids": ["neural_networks_basics"],
+    "expected_citation_titles": ["Neural Networks Basics"],
+    "expected_top_document_id": "neural_networks_basics",
+    "expected_answerability": "answerable"
+  },
+  {
+    "case_id": "support_unanswerable_passport",
     "mode": "support_kb",
     "profile": "balanced",
     "question": "How do I renew a passport in Canada?",
     "expected_document_ids": [],
     "expected_citation_titles": [],
+    "expected_top_document_id": null,
+    "expected_answerability": "not_enough_evidence"
+  },
+  {
+    "case_id": "academic_unanswerable_transformer_context",
+    "mode": "academic_pdf",
+    "profile": "balanced",
+    "question": "What is the transformer context window in tokens?",
+    "expected_document_ids": [],
+    "expected_citation_titles": [],
+    "expected_top_document_id": null,
+    "expected_answerability": "not_enough_evidence"
+  },
+  {
+    "case_id": "support_unanswerable_crypto_wallet",
+    "mode": "support_kb",
+    "profile": "balanced",
+    "question": "How do I recover a crypto wallet seed phrase?",
+    "expected_document_ids": [],
+    "expected_citation_titles": [],
+    "expected_top_document_id": null,
     "expected_answerability": "not_enough_evidence"
   }
 ]

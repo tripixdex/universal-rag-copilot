@@ -1,32 +1,47 @@
-# Demo Scenarios (Design-Time)
+# Demo Scenarios
 
-These are walkthrough scenarios for validating MVP intent before full implementation.
+These scenarios reflect the current runnable demo.
 
-## Scenario 1: `support_kb`
-- Corpus: internal support docs with FAQs and troubleshooting pages
-- Mode: `support_kb`
-- Chunking profile: `balanced`
-- User question: "How do I reset a 2FA device if the old phone is lost?"
+## Scenario 1: Answerable support question
+- Command:
+  `PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo --mode support_kb --profile balanced --question "How long do card refunds take to settle?"`
 - Expected behavior:
-  - Retrieval prioritizes procedural sections and exact policy steps
-  - Answer provides clear steps in order
-  - Citations point to specific support pages/sections used
+  - Returns an `answerable` result
+  - Mentions the 5-10 business day card-settlement timeline
+  - Cites `Returns and Refunds`
 
-## Scenario 2: `academic_pdf`
-- Corpus: a small set of scientific PDFs on one topic
-- Mode: `academic_pdf`
-- Chunking profile: `coarse`
-- User question: "What evidence is reported for method X improving recall?"
+## Scenario 2: Answerable academic question
+- Command:
+  `PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo --mode academic_pdf --profile balanced --question "In batch gradient descent, what data does each step use?"`
 - Expected behavior:
-  - Retrieval favors larger context windows from relevant paper sections
-  - Answer summarizes evidence conservatively
-  - Citations include paper title + section/page anchors when available
+  - Returns an `answerable` result
+  - Grounds the answer in `Optimization for Machine Learning`
+  - Shows citations rather than free-form unsupported text
 
 ## Scenario 3: Not enough evidence
-- Corpus: either mode, but missing direct support for the claim
-- User question: "Does the corpus prove that method X is always optimal?"
+- Command:
+  `PYTHONPATH=src python -m universal_rag_copilot.ui.cli ask-demo --mode support_kb --profile balanced --question "How do I renew a passport in Canada?"`
 - Expected behavior:
-  - System does not fabricate certainty
-  - Answer explicitly states evidence is insufficient
-  - Citations (if any) show related but non-conclusive sources
-  - User gets a suggestion to refine query or add more documents
+  - Returns `not_enough_evidence`
+  - Produces no citations
+  - Avoids fabricating an answer
+
+## Scenario 4: Eval credibility pass
+- Command:
+  `PYTHONPATH=src python -m universal_rag_copilot.ui.cli run-eval`
+- Expected behavior:
+  - Runs the expanded deterministic eval set
+  - Writes JSON and Markdown reports under `outputs/eval/`
+  - Reports at least 15 total cases
+
+## Scenario 5: Local API/UI demo
+- Commands:
+  `make up`
+  then open `http://127.0.0.1:8000/ui`
+- Expected behavior:
+  - `/ui` loads the plain HTML demo
+  - Ask results display answerability, answer text, citations, and retrieval summary in separate sections
+  - Eval results display pass count and report paths
+
+## Known limitation for restricted environments
+- If local socket binding is blocked by the environment, API behavior can still be verified with `make test` and FastAPI `TestClient`, but live browser/socket verification cannot be claimed.

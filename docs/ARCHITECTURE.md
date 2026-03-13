@@ -1,4 +1,4 @@
-# Architecture (Foundation)
+# Architecture
 
 ## Design principles
 - Local-first by default
@@ -19,9 +19,9 @@ Purpose: split normalized documents into retrieval units.
 - Strategy varies by mode to preserve useful context shape
 
 ### 3) Embeddings / Index
-Purpose: convert chunks to vector representations and store searchable index.
-- Keep interface abstract at this stage
-- Allow local backend swap later
+Purpose: provide the searchable evidence index used by the current demo.
+- Current implementation uses a deterministic lexical index over chunk token sets
+- Vector retrieval is intentionally not implemented in this local MVP
 
 ### 4) Retrieval
 Purpose: map query to ranked evidence chunks.
@@ -40,9 +40,9 @@ Purpose: validate retrieval and grounded-answer behavior.
 - Failure case coverage
 
 ### 7) UI
-Purpose: provide user interaction surface (CLI/UI later).
-- Mode/profile selection
-- Query input and cited answer output
+Purpose: provide the local interaction surfaces that already exist.
+- CLI for indexing, asking demo questions, and running eval
+- Minimal API and plain browser UI for local demos
 
 ## Data flow (logical)
 1. Raw corpus -> ingestion
